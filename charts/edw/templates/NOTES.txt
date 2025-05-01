@@ -1,0 +1,16 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To verify that the application is running, run:
+
+  kubectl get pods -l "app={{ .Release.Name }}"
+
+To access the application, run:
+
+  kubectl port-forward svc/{{ .Release.Name }} {{ .Values.service.port }}:{{ .Values.service.port }}
+
+Then open http://localhost:{{ .Values.service.port }} in your browser.
+
+For more information about the application, visit:
+https://github.com/WolfyIt/EDW 

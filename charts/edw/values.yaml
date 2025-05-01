@@ -1,0 +1,45 @@
+replicaCount: 1
+
+image:
+  repository: wolfyit/edw
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+# Database configuration
+database:
+  host: mysql
+  port: 3306
+  name: edw
+  user: edw_user
+  password: edw_password
+
+# Environment variables
+env:
+  APP_ENV: "production"
+  APP_DEBUG: "false"
+  APP_URL: "http://localhost:8080"
+  DB_HOST: "mysql"
+  DB_PORT: "3306"
+  DB_DATABASE: "edw"
+  DB_USERNAME: "edw_user"
+  DB_PASSWORD: "edw_password"
+
+# Resource limits
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# Persistence
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: "standard"
+  accessMode: ReadWriteOnce 
