@@ -24,6 +24,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    # Paso para configurar Node.js y npm
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # o cualquier versión de Node.js que necesites
+
+    # Paso para instalar las dependencias de npm
+    - name: Install npm dependencies
+      run: npm install
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
