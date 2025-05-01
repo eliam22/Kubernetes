@@ -34,8 +34,11 @@ jobs:
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+    - name: Copy .env if not exists
+      run: |
+        if [ ! -f .env ]; then
+          cp .env.example .env
+        fi
 
     - name: Generate key
       run: php artisan key:generate
@@ -138,4 +141,3 @@ jobs:
           --set env.APP_ENV=production \
           --set env.APP_DEBUG=false \
           --set env.APP_URL=https://edw.example.com
-
