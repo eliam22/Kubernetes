@@ -57,3 +57,8 @@ Route::middleware(['auth'])->prefix('private')->name('private.')->group(function
     // Customers routes
     Route::resource('customers', CustomerController::class);
 });
+
+// Alias para compatibilidad con nombre de ruta 'dashboard' (usado en tests)
+Route::middleware(['auth'])->get('/dashboard', function () {
+    return redirect()->route('private.dashboard');
+})->name('dashboard');
