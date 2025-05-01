@@ -10,7 +10,7 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
-    
+
     services:
       mysql:
         image: mysql:8.0
@@ -31,11 +31,11 @@ jobs:
         extensions: mbstring, dom, fileinfo, mysql
         coverage: xdebug
 
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
     - name: Generate key
       run: php artisan key:generate
@@ -130,4 +130,4 @@ jobs:
           --set image.tag=${{ github.sha }} \
           --set env.APP_ENV=production \
           --set env.APP_DEBUG=false \
-          --set env.APP_URL=https://edw.example.com 
+          --set env.APP_URL=https://edw.example.com
