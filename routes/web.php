@@ -57,4 +57,3 @@ Route::middleware(['auth'])->prefix('private')->name('private.')->group(function
     // Customers routes
     Route::resource('customers', CustomerController::class);
 });
-
