@@ -14,6 +14,10 @@ use App\Http\Controllers\Private\DashboardController;
 require __DIR__.'/auth.php';
 
 // Public routes
+Route::get('/', function () {
+    return redirect()->route('home');
+});
+
 Route::get('/home', function () {
     return view('public.home');
 })->name('home');
