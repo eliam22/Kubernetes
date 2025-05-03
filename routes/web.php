@@ -16,8 +16,8 @@ require __DIR__.'/auth.php';
 
 // Public routes
 Route::get('/', function () {
-    return redirect()->route('home');
-});
+    return view('public.home');
+})->name('home');
 
 Route::get('/home', function () {
     return view('public.home');
@@ -47,11 +47,6 @@ Route::get('/order/search/result', function (Request $request) {
 Route::middleware(['auth'])->prefix('private')->name('private.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Profile routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
     // Orders routes
     Route::resource('orders', OrderController::class);
     Route::get('orders-archived', [OrderController::class, 'archived'])->name('orders.archived');
@@ -66,6 +61,13 @@ Route::middleware(['auth'])->prefix('private')->name('private.')->group(function
     
     // Customers routes
     Route::resource('customers', CustomerController::class);
+});
+
+// Profile routes (without private prefix)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Alias para compatibilidad con nombre de ruta 'dashboard' (usado en tests)
