@@ -66,8 +66,7 @@ test('password can be reset with valid token', function () {
     $this->assertAuthenticated();
 });
 
-public function test_user_can_reset_password_with_valid_token()
-{
+test('user can reset password with valid token', function () {
     $user = User::factory()->create();
 
     $token = Password::createToken($user);
@@ -82,5 +81,5 @@ public function test_user_can_reset_password_with_valid_token()
     $response->assertSessionHasNoErrors();
     $response->assertRedirect(route('dashboard'));
 
-    $this->assertTrue(Hash::check('new-password', $user->fresh()->password));
-}
+    expect(Hash::check('new-password', $user->fresh()->password))->toBeTrue();
+});
