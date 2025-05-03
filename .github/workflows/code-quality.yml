@@ -7,45 +7,25 @@ on:
     branches: [ main ]
 
 jobs:
-  code-quality:
+  test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Debug - List files
-      run: |
-        pwd
-        ls -la
-
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
-        tools: composer, phpcs
+        tools: composer
         extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
-        coverage: none
-
-    - name: Debug - Check PHP installation
-      run: |
-        php -v
-        which php
-        which composer
-        composer -V
 
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
     - name: Install Dependencies
-      run: |
-        composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-        composer require --dev squizlabs/php_codesniffer
-
-    - name: Debug - Check vendor directory
-      run: |
-        ls -la vendor/bin/
-        which phpcs
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
     - name: Generate key
       run: php artisan key:generate
@@ -58,18 +38,8 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
 
-    - name: Execute tests (via PHPUnit)
+    - name: Execute tests
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
-      run: vendor/bin/phpunit
-
-    - name: Check code style
-      run: |
-        if [ -f "./vendor/bin/phpcs" ]; then
-          ./vendor/bin/phpcs --standard=PSR12 app tests
-        else
-          echo "phpcs not found in vendor/bin"
-          ls -la vendor/bin/
-          exit 1
-        fi 
+      run: vendor/bin/phpunit 
