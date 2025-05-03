@@ -67,11 +67,20 @@ test('password can be reset with valid token', function () {
 });
 
 test('user can reset password with valid token', function () {
+    Notification::fake();
+
     $user = User::factory()->create();
 
-    $token = Password::createToken($user);
+    $response = $this->post('/forgot-password', [
+        'email' => $user->email,
+    ]);
 
-    $response = $this->post(route('password.update'), [
+    Notification::assertSentTo($user, ResetPassword::class);
+
+    $notification = Notification::sent($user, ResetPassword::class)->first();
+    $token = $notification->token;
+
+    $response = $this->post('/reset-password', [
         'token' => $token,
         'email' => $user->email,
         'password' => 'new-password',
