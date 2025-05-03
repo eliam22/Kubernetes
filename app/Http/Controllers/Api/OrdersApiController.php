@@ -23,37 +23,51 @@ class OrdersApiController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'total' => 'required|numeric|min:0',
-            'status' => 'required|in:pending,processing,completed,cancelled'
+        $data = $request->validate([
+            'order_number'   => 'required|unique:orders',
+            'customer_id'    => 'required|exists:customers,id',
+            'invoice_number' => 'required|unique:orders',
+            'status'         => 'required|in:' . implode(',', Order::getStatuses()),
+            'total_amount'   => 'required|numeric|min:0',
+            'notes'          => 'nullable|string',
         ]);
 
-        $order = Order::create($validated);
+        $customer = Customer::find($data['customer_id']);
+        $data['customer_number'] = $customer->customer_number;
 
-        return response()->json($order, 201);
+        $order = Order::create($data);
+        return response()->json($order->load(['customer','products']), 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show($id)
     {
+        $order = Order::with(['customer','products'])->findOrFail($id);
         return response()->json($order);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'status' => 'required|in:pending,processing,completed,cancelled'
+        $order = Order::findOrFail($id);
+        $data = $request->validate([
+            'order_number'   => 'required|unique:orders,order_number,' . $order->id,
+            'customer_id'    => 'required|exists:customers,id',
+            'invoice_number' => 'required|unique:orders,invoice_number,' . $order->id,
+            'status'         => 'required|in:' . implode(',', Order::getStatuses()),
+            'total_amount'   => 'required|numeric|min:0',
+            'notes'          => 'nullable|string',
         ]);
 
-        $order->update($validated);
+        $customer = Customer::find($data['customer_id']);
+        $data['customer_number'] = $customer->customer_number;
 
-        return response()->json($order);
+        $order->update($data);
+        return response()->json($order->load(['customer','products']));
     }
 
     /**
