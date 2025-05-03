@@ -11,7 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Debug - List files
+      run: |
+        pwd
+        ls -la
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -21,6 +27,13 @@ jobs:
         extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
         coverage: none
 
+    - name: Debug - Check PHP installation
+      run: |
+        php -v
+        which php
+        which composer
+        composer -V
+
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
@@ -28,6 +41,11 @@ jobs:
       run: |
         composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
         composer require --dev squizlabs/php_codesniffer
+
+    - name: Debug - Check vendor directory
+      run: |
+        ls -la vendor/bin/
+        which phpcs
 
     - name: Generate key
       run: php artisan key:generate
@@ -48,4 +66,10 @@ jobs:
 
     - name: Check code style
       run: |
-        ./vendor/bin/phpcs --standard=PSR12 app tests 
+        if [ -f "./vendor/bin/phpcs" ]; then
+          ./vendor/bin/phpcs --standard=PSR12 app tests
+        else
+          echo "phpcs not found in vendor/bin"
+          ls -la vendor/bin/
+          exit 1
+        fi 
