@@ -17,7 +17,17 @@ return new class extends Migration
         });
 
         // Populate existing customers with a generated customer number
-        DB::statement("UPDATE customers SET customer_number = CONCAT('CUST', LPAD(id, 6, '0'))");
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            // SQLite version
+            DB::table('customers')->orderBy('id')->get()->each(function ($customer) {
+                DB::table('customers')
+                    ->where('id', $customer->id)
+                    ->update(['customer_number' => 'CUST' . str_pad($customer->id, 6, '0', STR_PAD_LEFT)]);
+            });
+        } else {
+            // MySQL version
+            DB::statement("UPDATE customers SET customer_number = CONCAT('CUST', LPAD(id, 6, '0'))");
+        }
     }
 
     /**
