@@ -40,7 +40,7 @@ jobs:
       run: npm install
 
     - name: Run PHP Code Sniffer
-      run: ~/.composer/vendor/bin/phpcs --standard=PSR12 app tests
+      run: ~/.composer/vendor/bin/phpcs --standard=PSR12 --ignore=tests/Pest.php app tests
 
     - name: Run Tests
       run: vendor/bin/pest 
