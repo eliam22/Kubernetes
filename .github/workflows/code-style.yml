@@ -17,18 +17,16 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          tools: composer
+          tools: composer, phpcs
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
 
       - name: Install dependencies
-        run: |
-          composer install --no-interaction --prefer-dist
-          composer require --dev squizlabs/php_codesniffer
+        run: composer install --no-interaction --prefer-dist
 
       - name: Run PHPCS
         run: |
           echo "Current directory: $(pwd)"
-          echo "Listing vendor/bin:"
-          ls -la vendor/bin/
+          echo "PHPCS version:"
+          phpcs --version
           echo "Running PHPCS..."
-          ./vendor/bin/phpcs --standard=PSR12 app tests 
+          phpcs --standard=PSR12 app tests 
