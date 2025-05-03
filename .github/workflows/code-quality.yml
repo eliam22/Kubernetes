@@ -25,7 +25,9 @@ jobs:
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
     - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      run: |
+        composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        composer require --dev squizlabs/php_codesniffer
 
     - name: Generate key
       run: php artisan key:generate
@@ -45,4 +47,5 @@ jobs:
       run: vendor/bin/phpunit
 
     - name: Check code style
-      run: vendor/bin/phpcs --standard=PSR12 app tests 
+      run: |
+        ./vendor/bin/phpcs --standard=PSR12 app tests 
