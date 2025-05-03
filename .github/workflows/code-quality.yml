@@ -24,11 +24,20 @@ jobs:
     - name: Install Composer Dependencies
       run: composer install --prefer-dist --no-interaction
 
+    - name: Install PHP_CodeSniffer
+      run: composer global require squizlabs/php_codesniffer
+
+    - name: Fix PSR-4 Autoloading
+      run: |
+        mkdir -p app/Http/Controllers/Auth
+        mv app/Http/Controllers/RegisteredUserController.php app/Http/Controllers/Auth/
+        mv app/Http/Controllers/UserController.php app/Http/Controllers/Private/
+
     - name: Install Node.js Dependencies
       run: npm install
 
     - name: Run PHP Code Sniffer
-      run: vendor/bin/phpcs --standard=PSR12 app tests
+      run: ~/.composer/vendor/bin/phpcs --standard=PSR12 app tests
 
     - name: Run Tests
       run: vendor/bin/pest 
