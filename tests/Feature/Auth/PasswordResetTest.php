@@ -3,6 +3,8 @@
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
 
 test('reset password link screen can be rendered', function () {
     $response = $this->get('/forgot-password');
@@ -63,3 +65,22 @@ test('password can be reset with valid token', function () {
 
     $this->assertAuthenticated();
 });
+
+public function test_user_can_reset_password_with_valid_token()
+{
+    $user = User::factory()->create();
+
+    $token = Password::createToken($user);
+
+    $response = $this->post(route('password.update'), [
+        'token' => $token,
+        'email' => $user->email,
+        'password' => 'new-password',
+        'password_confirmation' => 'new-password',
+    ]);
+
+    $response->assertSessionHasNoErrors();
+    $response->assertRedirect(route('dashboard'));
+
+    $this->assertTrue(Hash::check('new-password', $user->fresh()->password));
+}

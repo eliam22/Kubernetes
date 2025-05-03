@@ -52,21 +52,16 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6|confirmed',
-            'role_id' => 'required|exists:roles,id',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role_id' => 'nullable|exists:roles,id'
         ]);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password ? bcrypt($request->password) : $user->password,
-            'role_id' => $request->role_id,
-        ]);
+        $user->update($validated);
 
-        return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
+        return redirect()->route('users.index')
+            ->with('success', 'User updated successfully.');
     }
 
     public function destroy(User $user)
