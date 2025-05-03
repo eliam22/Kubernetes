@@ -46,8 +46,14 @@ jobs:
       run: |
         cp .env.example .env
         php artisan key:generate
+        echo "DB_CONNECTION=sqlite" >> .env
+        echo "DB_DATABASE=:memory:" >> .env
         php artisan config:clear
         php artisan cache:clear
+        php artisan migrate --force
 
     - name: Run Tests
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: :memory:
       run: vendor/bin/pest 
