@@ -15,7 +15,7 @@ class User extends Authenticatable
 
     // Los atributos que son asignables
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'email_verified_at',
+        'name', 'email', 'password', 'email_verified_at',
     ];
 
     // Los atributos que deberían ser ocultados para los arrays
