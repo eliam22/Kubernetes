@@ -33,6 +33,9 @@ jobs:
         mv app/Http/Controllers/RegisteredUserController.php app/Http/Controllers/Auth/
         mv app/Http/Controllers/UserController.php app/Http/Controllers/Private/
 
+    - name: Fix Coding Style Issues
+      run: ~/.composer/vendor/bin/phpcbf --standard=PSR12 app tests
+
     - name: Install Node.js Dependencies
       run: npm install
 
